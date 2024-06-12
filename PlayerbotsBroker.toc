@@ -1,0 +1,50 @@
+## Interface: 30300
+## Title: PlayerbotsBroker
+## Author: azcguy
+## Version: v0.1a
+## Notes: Manages bot data and communicates with AzerothCore-mod-playerbots server,  liyunfan1223/mod-playerbots
+## URL:
+## Name: PlayerbotsBoker
+## License: GPLv3
+## X-Website:
+## OptionalDeps: AceLibrary,AceEvent-2.0,AceHook-2.1,AceDebug-2.0,AceLocale-2.2,AceConsole-2.0,AceAddon-2.0
+## DefaultState: Enabled
+## LoadOnDemand: 0
+## SavedVariables: PlayerbotsBrokerDb
+## SavedVariablesPerCharacter: PlayerbotsBrokerDbPerChar
+lib\AceLibrary\AceLibrary.lua
+lib\AceOO-2.0\AceOO-2.0.lua
+lib\AceEvent-2.0\AceEvent-2.0.lua
+lib\AceHook-2.1\AceHook-2.1.lua
+lib\AceDB-2.0\AceDB-2.0.lua
+lib\AceDebug-2.0\AceDebug-2.0.lua
+lib\AceConsole-2.0\AceConsole-2.0.lua
+lib\AceAddon-2.0\AceAddon-2.0.lua
+init.lua
+config.lua
+consts.lua
+utils\util.lua
+utils\event.lua
+utils\parser.lua
+utils\pool.lua
+utils\stringBuffer.lua
+utils\updateHandler.lua
+data\data.lua
+data\factionId.lua
+store.lua
+broker\events.lua
+broker\broker.lua
+broker\queries\query_currency.lua
+broker\queries\query_gear.lua
+broker\queries\query_inventory.lua
+broker\queries\query_stats.lua
+broker\queries\query_who.lua
+broker\queries\report_currency.lua
+broker\queries\report_experience.lua
+broker\queries\report_inventory.lua
+broker\queries\report_itemEquipped.lua
+broker\queries\report_quest.lua
+broker\queries\report_spells.lua
+broker\queries\report_talents.lua
+addon.lua
+api.lua
