@@ -2,9 +2,8 @@ PlayerbotsBroker.store = {}
 local _self = PlayerbotsBroker.store
 local _util = PlayerbotsBroker.util
 local _debug = PlayerbotsBroker.debug
-_self.bots = {}
-local _bots = _self.bots
 local _botStatus = {}
+local _bots = {}
 
 local _pool_bagslotdata = _util.pool.Create(
     function ()
@@ -18,8 +17,9 @@ local _pool_bagslotdata = _util.pool.Create(
 function _self:Init(db)
     if db.char.bots == nil then
         db.char.bots = {}
-        _bots = db.char.bots
     end
+    _self.bots = db.char.bots
+    _bots = db.char.bots
     for name, bot in pairs(_bots) do
         _self:ValidateBotData(bot)
     end
@@ -357,7 +357,7 @@ end
 
 function _self:UnregisterBot(name)
     if _bots[name] ~= nil then
-        _bots = _util.RemoveByKey(_bots, name)
+        _bots[name] = nil
     end
 end
 

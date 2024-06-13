@@ -79,14 +79,14 @@ function _self.Create()
         local len = _getn(self.delayedCalls)
         for i = len, 1, -1 do
           local call = self.delayedCalls[i]
-          if call.callAt < _self.totalTime then
+          if call.callAt < self.totalTime then
             call:callback()
             _tremove(self.delayedCalls, i)
           end
         end
     end
     
-    function updateHandler:DelayCall(seconds, func)
+    function updateHandler.DelayCall(self, seconds, func)
       local call = {
         callAt = self.totalTime + seconds,
         callback = func

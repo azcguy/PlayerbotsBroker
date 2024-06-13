@@ -14,14 +14,17 @@ local QUERY_TYPE = _const.QUERY
 local MSG_HEADER = _const.MSG_HEADER
 local SYS_MSG_TYPE = _const.SYS_MSG_TYPE
 _self.parser = _util.parser.Create()
-local _bots = PlayerbotsBroker.store.bots
-local _updateHandler = nil
+local _bots = {}
+local _updateHandler = {}
 
-local _queries = {} -- [botName][QUERY_TYPE] Stores queues per query type, per bot
+local _activeQueries = {} -- [botName][QUERY_TYPE] Stores queues per query type, per bot
 local _activeQueriesById = {} -- optimization, duplicates references to queries in _queries but accelerates lookup by int
 local _freeIdsStack = {}
 local _freeIdsCount = 0
 local _activeIdsCount = 0
+local _queryPool = {}
+local _queryPoolCount = 0
+
 local _prefixCode = _const.prefixCode
 local MSG_SEPARATOR_BYTE = _const.MSG_SEPARATOR_BYTE
 local UTF8_NUM_FIRST = _const.UTF8_NUM_FIRST
@@ -105,6 +108,7 @@ end
 function _self:Init()
     _updateHandler = PlayerbotsBroker.updateHandler
     _updateHandler.onUpdate:Add(_self.OnUpdate)
+    _bots = PlayerbotsBroker.store.bots
 
     for name, bot in _pairs(_bots) do
         local status = _store:GetBotStatus(bot.name)
@@ -143,7 +147,6 @@ function _self:StartQuery(qtype, bot)
         print("Attempted to start a query on a nil bot")
         return
     end
-    _util.DumpTable(bot)
     local status = _store:GetBotStatus(bot.name)
     if not status.online then return end -- abort query because the bot is either not available or offline
     local array = _self:GetQueriesArray(bot.name)
@@ -178,8 +181,7 @@ local function ReleaseQueryID(id)
     _activeIdsCount = _activeIdsCount - 1
 end
 
-local _queryPool = {}
-local _queryPoolCount = 0
+
 function _self:ConstructQuery(qtype, name)
     local template = queryTemplates[qtype]
     if template then
@@ -269,7 +271,6 @@ local MSG_HANDLERS = {}
 MSG_HANDLERS[_const.MSG_HEADER.SYSTEM] = SYS_MSG_HANDLERS
 MSG_HANDLERS[MSG_HEADER.REPORT] = PlayerbotsBroker.reports
 
-
 function _self:CHAT_MSG_ADDON(prefix, message, channel, sender)
     if prefix == _prefixCode then 
         local bot = _bots[sender]
@@ -330,10 +331,10 @@ function _self:GetQueriesArray(name)
     if not name then
         _debug:LevelDebug(2, "PlayerbotsBroker:GetQueries", "name is nil")
     end
-    local array = _queries[name]
+    local array = _activeQueries[name]
     if not array then
         array = {}
-        _queries[name] = array
+        _activeQueries[name] = array
     end
     return array
 end
